@@ -1,0 +1,16 @@
+<project>
+    <bannerLeft>
+        <name>Spigot Plugin: StatisticsServer</name>
+    </bannerLeft>
+
+    <bannerRight>
+        <src>https://mc.rene-majewski.de</src>
+    </bannerRight>
+
+    <publishDate position="right" format="DD.MM.YYYY" />
+    <version position="left" />
+
+    <body>
+        <menu ref="reports" />
+    </body>
+</project>
