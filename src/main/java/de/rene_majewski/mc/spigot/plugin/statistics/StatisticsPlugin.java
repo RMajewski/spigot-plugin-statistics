@@ -22,26 +22,38 @@ import org.bukkit.plugin.java.annotation.plugin.LoadOrder;
 import org.bukkit.plugin.java.annotation.plugin.Plugin;
 import org.bukkit.plugin.java.annotation.plugin.Website;
 
+/**
+ * Hauptklasse des Plugins.
+ *
+ * @author René Majewski
+ * @since 0.1
+ */
 @Plugin(name = "StatisticsServer", version = "0.1")
 @Description(value = "Generate a statistic in a MySQL database.")
 @LoadOrder(value = PluginLoadOrder.POSTWORLD)
 @Author(value = "Thuringa")
 @Website(value = "mc.rene-majewski.de")
 public class StatisticsPlugin extends JavaPlugin implements Listener {
-    FileConfiguration config = getConfig();
+    /**
+     * Speichert die Haupt-Konfiguration.
+     */
+    private FileConfiguration mConfig = getConfig();
 
+    /**
+     * Wird aufgerufen, wenn das Plugin aktiviert wird.
+     */
     @Override
     public void onEnable() {
         // Konfiguration erstellen / laden
-        config.addDefault("db.host", "");
-        config.addDefault("db.port", 3306);
-        config.addDefault("db.db_name", "");
-        config.addDefault("db.user", "");
-        config.addDefault("db.password", "");
-        config.addDefault("db.table_prefix", "statistics_");
+        mConfig.addDefault("db.host", "");
+        mConfig.addDefault("db.port", Database.STANDARD_PORT);
+        mConfig.addDefault("db.db_name", "");
+        mConfig.addDefault("db.user", "");
+        mConfig.addDefault("db.password", "");
+        mConfig.addDefault("db.table_prefix", "statistics_");
 
         // Konfiguration speichern
-        config.options().copyDefaults(true);
+        mConfig.options().copyDefaults(true);
         saveConfig();
 
         // Auf Ereignisse reagieren
@@ -51,15 +63,18 @@ public class StatisticsPlugin extends JavaPlugin implements Listener {
         getLogger().info("Prepare access to database");
         Database db = Database.getInstance();
         db.open(
-            config.getString("db.host"),
-            config.getInt("db.port"),
-            config.getString("db.db_name"),
-            config.getString("db.user"),
-            config.getString("db.password")
+            mConfig.getString("db.host"),
+            mConfig.getInt("db.port"),
+            mConfig.getString("db.db_name"),
+            mConfig.getString("db.user"),
+            mConfig.getString("db.password")
         );
         db.createDatabase();
     }
 
+    /**
+     * Wird aufgerufen, wenn das Plugin deaktiviert wird.
+     */
     @Override
     public void onDisable() {
         // Verbindung zur Datenbank beenden
@@ -67,10 +82,13 @@ public class StatisticsPlugin extends JavaPlugin implements Listener {
         getLogger().info("Close connection to database");
     }
 
+    /**
+     * Wird aufgerufen, wenn ein Benutzer den Server beitritt.
+     *
+     * @param event Daten des Ereignisses.
+     */
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(final PlayerJoinEvent event) {
         Player player = event.getPlayer();
     }
-
-    
 }

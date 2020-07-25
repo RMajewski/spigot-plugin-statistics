@@ -6,61 +6,65 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.xml.crypto.Data;
-
 /**
  * Klasse die den Zugriff auf die Datenbank managed.
- * 
+ *
  * @author René Majewski
- * 
+ *
  * @since 0.1
  */
-public class Database {
+public final class Database {
+    /**
+     * Gibt den Standard-Port an, auf dem der MySQL-Server läuft.
+     */
+    public static final int STANDARD_PORT = 3306;
+
     /**
      * Speichert die Instanz der Klasse.
      */
-    private static Database _instance;
+    private static Database mInstance;
 
     /**
      * Speichert die Verbindung zur Datenbank.
      */
-    private Connection _connection;
+    private Connection mConnection;
 
     /**
-     * Konstruktor
+     * Konstruktor.
      */
     private Database() {
     }
 
     /**
      * Gibt die Instanz der Klasse zurück.
-     * 
+     *
      * Wenn die Instanz der Klasse noch nicht existiert wird diese erzeugt.
-     * 
+     *
      * @return Instanz dieser Klasse.
      */
     public static Database getInstance() {
-        if (Database._instance == null) {
-            Database._instance = new Database();
+        if (Database.mInstance == null) {
+            Database.mInstance = new Database();
         }
 
-        return Database._instance;
+        return Database.mInstance;
     }
 
     /**
-     * Öffnet die Verbindung zur Datenbank
-     * 
-     * @param host URL des Server, auf dem der MySQL-Server läuft
-     * 
-     * @param port Port über den der MySQL-Server erreichbar ist
-     * 
+     * Öffnet die Verbindung zur Datenbank.
+     *
+     * @param host URL des Server, auf dem der MySQL-Server läuft.
+     *
+     * @param port Port über den der MySQL-Server erreichbar ist.
+     *
      * @param name Name der Datenbank, auf die Zugegriffen werden soll.
-     * 
+     *
      * @param user Name des Datenbank-Benutzers.
-     * 
+     *
      * @param password Password für den Datenbank-Benutzer.
      */
-    public void open(String host, int port, String name, String user, String password) {
+    public void open(final String host, final int port, final String name,
+                     final String user, final String password) {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
@@ -79,19 +83,23 @@ public class Database {
 
             System.out.println(url.toString());
 
-            this._connection = DriverManager.getConnection(url.toString(), user, password);
+            this.mConnection = DriverManager.getConnection(
+                url.toString(),
+                user,
+                password
+            );
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Beendet die Verbindung zur Datenbank
+     * Beendet die Verbindung zur Datenbank.
      */
     public void close() {
-        if (this._connection != null) {
+        if (this.mConnection != null) {
             try {
-                this._connection.close();
+                this.mConnection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -107,17 +115,17 @@ public class Database {
 
     /**
      * Führt einen SQL-Befehl aus.
-     * 
-     * @param sql SQL-Befehl der ausgeführt werden soll
-     * 
+     *
+     * @param sql SQL-Befehl der ausgeführt werden soll.
+     *
      * @return Resultat des SQL-Befehls. Ist ein Fehler aufgetreten, so wird
      * <code>null</code> zurück gegeben.
      */
-    public ResultSet execQuery(String sql) {
+    public ResultSet execQuery(final String sql) {
         ResultSet result = null;
 
         try {
-            PreparedStatement stm =  this._connection.prepareStatement(sql);
+            PreparedStatement stm =  this.mConnection.prepareStatement(sql);
             result = stm.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
