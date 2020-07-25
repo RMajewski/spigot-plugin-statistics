@@ -2,6 +2,8 @@ package de.rene_majewski.mc.spigot.plugin.statistics.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.xml.crypto.Data;
@@ -101,5 +103,26 @@ public class Database {
      */
     public void createDatabase() {
 
+    }
+
+    /**
+     * Führt einen SQL-Befehl aus.
+     * 
+     * @param sql SQL-Befehl der ausgeführt werden soll
+     * 
+     * @return Resultat des SQL-Befehls. Ist ein Fehler aufgetreten, so wird
+     * <code>null</code> zurück gegeben.
+     */
+    public ResultSet execQuery(String sql) {
+        ResultSet result = null;
+
+        try {
+            PreparedStatement stm =  this._connection.prepareStatement(sql);
+            result = stm.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 }
